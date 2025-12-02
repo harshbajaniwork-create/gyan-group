@@ -79,6 +79,10 @@ declare module "gsap/ScrollTrigger" {
       callback: (event: Event) => void
     ): void;
     kill(): void;
+
+    // Instance properties
+    direction: number;
+    progress: number;
   }
   export default ScrollTrigger;
 }

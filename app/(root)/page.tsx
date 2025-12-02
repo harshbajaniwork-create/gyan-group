@@ -1,9 +1,7 @@
-import ScrollSmoothProvider from "@/components/ScrollSmoothProvider";
+import HomeView from "@/modules/home/ui/views/home-view";
 
-export default function Home() {
-  return (
-    <ScrollSmoothProvider>
-      <div className="bg-muted min-h-screen">hi</div>
-    </ScrollSmoothProvider>
-  );
-}
+const Page = () => {
+  return <HomeView />;
+};
+
+export default Page;
