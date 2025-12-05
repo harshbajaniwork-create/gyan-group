@@ -1,42 +1,79 @@
-import { boolean, pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { boolean, pgTable, text, timestamp, index } from "drizzle-orm/pg-core";
 import { nanoid } from "nanoid";
 
-export const blogsTable = pgTable("blogs", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => nanoid()),
-  slug: text("slug").notNull().unique(),
-  title: text("title").notNull(),
-  content: text("content").notNull(),
-  image: text("image").notNull(),
-  category: text("category").notNull(),
-  featured: boolean("featured").notNull().default(false),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
-});
+// Blogs table (unchanged for now)
+export const blogsTable = pgTable(
+  "blogs",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => nanoid()),
+    slug: text("slug").notNull().unique(),
+    title: text("title").notNull(),
+    content: text("content").notNull(),
+    image: text("image").notNull(),
+    category: text("category").notNull(),
+    featured: boolean("featured").notNull().default(false),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (table) => [index("blogs_category_idx").on(table.category)]
+);
 
-// Define the enum outside the table
-export const productCategoryEnum = pgEnum("product_category", [
-  "Pharma and API Intermediates",
-  "Pigment Intermediates",
-  "Dye Intermediates",
-]);
+// Categories table
+export const categoriesTable = pgTable(
+  "categories",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => nanoid()),
+    name: text("name").notNull().unique(),
+    category: text("category").notNull(),
+    slug: text("slug").notNull().unique(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (table) => [index("categories_name_idx").on(table.name)]
+);
 
-export const productsTable = pgTable("products", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => nanoid()),
-  slug: text("slug").notNull().unique(),
-  title: text("title").notNull(),
-  image: text("image").notNull(),
-  category: productCategoryEnum("category").notNull(),
-  productNumber: text("product_number").notNull(),
-  casNumber: text("cas_number").notNull(),
-  molecularWeight: text("molecular_weight").notNull(),
-  molecularFormula: text("molecular_formula").notNull(),
-  productStatus: text("product_status").notNull(),
-  application: text("application").notNull(),
-  specifications: text("specifications").notNull(),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
-});
+export const productsTable = pgTable(
+  "products",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => nanoid()),
+    slug: text("slug").notNull().unique(),
+    title: text("title").notNull(),
+    image: text("image").notNull(),
+    categoryId: text("category_id")
+      .notNull()
+      .references(() => categoriesTable.id, { onDelete: "cascade" }),
+    productNumber: text("product_number").notNull(),
+    casNumber: text("cas_number").notNull(),
+    molecularWeight: text("molecular_weight").notNull(),
+    molecularFormula: text("molecular_formula").notNull(),
+    productStatus: text("product_status").notNull(),
+    application: text("application").notNull(),
+    specifications: text("specifications").notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (table) => [index("products_category_id_idx").on(table.categoryId)]
+);
+
+export const inquiresTable = pgTable(
+  "inquires",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => nanoid()),
+    name: text("name").notNull(),
+    email: text("email").notNull(),
+    phone: text("phone").notNull(),
+    intrest: text("intrest").notNull(),
+    message: text("message").notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (table) => [index("inquires_email_idx").on(table.email)]
+);

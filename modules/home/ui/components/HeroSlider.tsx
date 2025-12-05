@@ -165,13 +165,13 @@ export const HeroSlider = () => {
               return (
                 <div
                   key={index}
-                  className="flex flex-col items-center text-center group"
+                  className="flex flex-col items-center justify-center text-center group"
                 >
                   {/* Number */}
-                  <div className="text-4xl md:text-5xl lg:text-6xl font-bold text-ivory mb-2 flex items-center justify-center gap-4">
-                    <div className="p-4 rounded-full bg-teal-green/10 group-hover:bg-teal-green/20 transition-colors duration-300">
-                      <Icon className="w-8 h-8 md:w-10 md:h-10 text-teal-green group-hover:text-turquoise-blue transition-colors duration-300" />
-                    </div>
+                  <div className="p-4 mb-4 rounded-full bg-teal-green/10 group-hover:bg-teal-green/20 transition-colors duration-300">
+                    <Icon className="w-8 h-8 md:w-14 md:h-14 text-teal-green group-hover:text-turquoise-blue transition-colors duration-300" />
+                  </div>
+                  <div className="text-4xl md:text-5xl lg:text-6xl font-bold text-ivory mb-2 flex flex-col items-center justify-center gap-4">
                     <CountUp
                       end={stat.value}
                       duration={2.5}
@@ -179,12 +179,11 @@ export const HeroSlider = () => {
                       enableScrollSpy
                       scrollSpyOnce
                     />
+                    {/* Label */}
+                    <p className="text-pewter text-sm md:text-base lg:text-lg font-medium">
+                      {stat.label}
+                    </p>
                   </div>
-
-                  {/* Label */}
-                  <p className="text-pewter text-sm md:text-base lg:text-lg font-medium">
-                    {stat.label}
-                  </p>
                 </div>
               );
             })}
