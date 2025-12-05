@@ -14,6 +14,11 @@ export const blogsTable = pgTable(
     image: text("image").notNull(),
     category: text("category").notNull(),
     featured: boolean("featured").notNull().default(false),
+    author: text("author").notNull(),
+    tags: text("tags").array().notNull(),
+    status: text("status", { enum: ["draft", "published"] })
+      .notNull()
+      .default("draft"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
   },
