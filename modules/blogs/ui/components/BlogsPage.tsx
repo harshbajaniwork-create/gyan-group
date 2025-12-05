@@ -1,78 +1,61 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Calendar, ArrowRight } from "lucide-react";
+import { Calendar, ArrowRight, Loader2 } from "lucide-react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import { getAllBlogs } from "@/modules/admin/blogs/server/actions";
+import { formatDate } from "@/lib/utils";
+import { BlogPost, PLACEHOLDER_IMAGE, createExcerpt } from "../types";
+import { convertRichTextToHtml } from "@/lib/rich-text";
 
 gsap.registerPlugin(ScrollTrigger);
-
-interface BlogPost {
-  id: number;
-  title: string;
-  excerpt: string;
-  image: string;
-  date: string;
-  slug: string;
-  featured?: boolean;
-}
-
-const blogPosts: BlogPost[] = [
-  {
-    id: 1,
-    title:
-      "Early Access to Sahara AI Studio Now Open: An Integrated Platform Redefining AI Development",
-    excerpt:
-      "Join the Early Access Program for Sahara AI Studio. This program provides exclusive early access to an all-in-one platform designed to transform the AI development lifecycle into a streamlined, integrated experience.",
-    image: "/blogs/blogs1.jpg",
-    date: "FEB 11, 2025",
-    slug: "sahara-ai-studio-early-access",
-    featured: true,
-  },
-  {
-    id: 2,
-    title:
-      "Early Access to Sahara AI Studio Now Open: An Integrated Platform Redefining AI Development",
-    excerpt:
-      "Join the Early Access Program for Sahara AI Studio. This program provides exclusive early access to an all-in-one platform designed to...",
-    image: "/blogs/blogs2.jpg",
-    date: "FEB 11, 2025",
-    slug: "sahara-ai-studio",
-  },
-  {
-    id: 3,
-    title:
-      "Introducing Sahara Legends: A New, Gamified Way to Interact with the Sahara Ecosystem",
-    excerpt:
-      "Experience a revolutionary way to engage with AI development through our new gamified platform.",
-    image: "/blogs/blogs3.jpg",
-    date: "JAN 29, 2025",
-    slug: "sahara-legends",
-  },
-  {
-    id: 4,
-    title:
-      "DeepSeek: How 10,000 GPUs and a Quant Trader Sparked an AI Revolution",
-    excerpt:
-      "Discover the fascinating story behind DeepSeek's breakthrough in AI computing infrastructure.",
-    image: "/blogs/blogs4.jpg",
-    date: "JAN 25, 2025",
-    slug: "deepseek-ai-revolution",
-  },
-];
 
 export const BlogsPage = () => {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const sectionRef = useRef<HTMLElement>(null);
   const featuredRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
   const newsletterRef = useRef<HTMLDivElement>(null);
+
+  // Fetch blogs from database
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const result = await getAllBlogs({ status: "published" });
+
+        if (result.success && result.data) {
+          const formattedBlogs: BlogPost[] = result.data.map((blog) => {
+            const htmlContent = convertRichTextToHtml(blog.content);
+            return {
+              id: blog.id,
+              title: blog.title,
+              excerpt: createExcerpt(htmlContent, 150),
+              image: PLACEHOLDER_IMAGE,
+              date: formatDate(blog.createdAt, "short"),
+              slug: blog.slug,
+              featured: blog.featured,
+            };
+          });
+          setBlogPosts(formattedBlogs);
+        }
+      } catch (error) {
+        console.error("Error fetching blogs:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchBlogs();
+  }, []);
 
   useGSAP(
     () => {
@@ -83,44 +66,50 @@ export const BlogsPage = () => {
         const contentItems =
           featuredRef.current.querySelectorAll(".content-item");
 
-        gsap.from(image, {
-          scrollTrigger: {
-            trigger: featuredRef.current,
-            start: "top 80%",
-          },
-          x: -100,
-          opacity: 0,
-          duration: 1,
-          ease: "power3.out",
-        });
+        if (image) {
+          gsap.from(image, {
+            scrollTrigger: {
+              trigger: featuredRef.current,
+              start: "top 80%",
+            },
+            x: -100,
+            opacity: 0,
+            duration: 1,
+            ease: "power3.out",
+          });
+        }
 
-        gsap.from(contentItems, {
-          scrollTrigger: {
-            trigger: content,
-            start: "top 80%",
-          },
-          y: 50,
-          opacity: 0,
-          duration: 0.8,
-          stagger: 0.15,
-          ease: "power3.out",
-        });
+        if (contentItems.length > 0) {
+          gsap.from(contentItems, {
+            scrollTrigger: {
+              trigger: content,
+              start: "top 80%",
+            },
+            y: 50,
+            opacity: 0,
+            duration: 0.8,
+            stagger: 0.15,
+            ease: "power3.out",
+          });
+        }
       }
 
       // Blog cards animation
       if (cardsRef.current) {
         const cards = cardsRef.current.querySelectorAll(".blog-card");
-        gsap.from(cards, {
-          scrollTrigger: {
-            trigger: cardsRef.current,
-            start: "top 80%",
-          },
-          y: 60,
-          opacity: 0,
-          duration: 0.8,
-          stagger: 0.15,
-          ease: "power3.out",
-        });
+        if (cards.length > 0) {
+          gsap.from(cards, {
+            scrollTrigger: {
+              trigger: cardsRef.current,
+              start: "top 80%",
+            },
+            y: 60,
+            opacity: 0,
+            duration: 0.8,
+            stagger: 0.15,
+            ease: "power3.out",
+          });
+        }
       }
 
       // Newsletter animation
@@ -131,43 +120,49 @@ export const BlogsPage = () => {
         );
         const form = newsletterRef.current.querySelector(".newsletter-form");
 
-        gsap.from(title, {
-          scrollTrigger: {
-            trigger: newsletterRef.current,
-            start: "top 85%",
-          },
-          y: 40,
-          opacity: 0,
-          duration: 0.8,
-          ease: "power3.out",
-        });
+        if (title) {
+          gsap.from(title, {
+            scrollTrigger: {
+              trigger: newsletterRef.current,
+              start: "top 85%",
+            },
+            y: 40,
+            opacity: 0,
+            duration: 0.8,
+            ease: "power3.out",
+          });
+        }
 
-        gsap.from(subtitle, {
-          scrollTrigger: {
-            trigger: newsletterRef.current,
-            start: "top 85%",
-          },
-          y: 30,
-          opacity: 0,
-          duration: 0.8,
-          delay: 0.2,
-          ease: "power3.out",
-        });
+        if (subtitle) {
+          gsap.from(subtitle, {
+            scrollTrigger: {
+              trigger: newsletterRef.current,
+              start: "top 85%",
+            },
+            y: 30,
+            opacity: 0,
+            duration: 0.8,
+            delay: 0.2,
+            ease: "power3.out",
+          });
+        }
 
-        gsap.from(form, {
-          scrollTrigger: {
-            trigger: newsletterRef.current,
-            start: "top 85%",
-          },
-          y: 30,
-          opacity: 0,
-          duration: 0.8,
-          delay: 0.4,
-          ease: "power3.out",
-        });
+        if (form) {
+          gsap.from(form, {
+            scrollTrigger: {
+              trigger: newsletterRef.current,
+              start: "top 85%",
+            },
+            y: 30,
+            opacity: 0,
+            duration: 0.8,
+            delay: 0.4,
+            ease: "power3.out",
+          });
+        }
       }
     },
-    { scope: sectionRef }
+    { scope: sectionRef, dependencies: [blogPosts] }
   );
 
   const handleSubscribe = async (e: React.FormEvent) => {
@@ -190,6 +185,18 @@ export const BlogsPage = () => {
 
   const featuredPost = blogPosts.find((post) => post.featured);
   const regularPosts = blogPosts.filter((post) => !post.featured);
+
+  if (isLoading) {
+    return (
+      <section className="bg-ivory py-16 md:py-24 lg:py-32">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-center items-center h-full text-pewter">
+            <Loader2 className="w-12 h-12 text-teal-green animate-spin" />
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section ref={sectionRef} className="bg-ivory py-16 md:py-24 lg:py-32">
@@ -248,46 +255,52 @@ export const BlogsPage = () => {
           ref={cardsRef}
           className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16 md:mb-20"
         >
-          {regularPosts.map((post) => (
-            <div
-              key={post.id}
-              className="blog-card bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-2xl transition-all duration-500 hover:-translate-y-2"
-            >
-              {/* Image */}
-              <div className="relative h-[240px] overflow-hidden">
-                <Image
-                  src={post.image}
-                  alt={post.title}
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-              </div>
-
-              {/* Content */}
-              <div className="p-6">
-                <div className="flex items-center gap-2 text-pewter text-sm mb-3">
-                  <Calendar className="w-4 h-4" />
-                  <span>{post.date}</span>
+          {regularPosts.length > 0 ? (
+            regularPosts.map((post) => (
+              <div
+                key={post.id}
+                className="blog-card bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-2xl transition-all duration-500 hover:-translate-y-2"
+              >
+                {/* Image */}
+                <div className="relative h-[240px] overflow-hidden">
+                  <Image
+                    src={post.image}
+                    alt={post.title}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
                 </div>
 
-                <h3 className="text-ebony text-xl font-bold mb-3 leading-tight line-clamp-2 group-hover:text-teal-green transition-colors duration-300">
-                  {post.title}
-                </h3>
+                {/* Content */}
+                <div className="p-6">
+                  <div className="flex items-center gap-2 text-pewter text-sm mb-3">
+                    <Calendar className="w-4 h-4" />
+                    <span>{post.date}</span>
+                  </div>
 
-                <p className="text-pewter text-sm leading-relaxed mb-4 line-clamp-3">
-                  {post.excerpt}
-                </p>
+                  <h3 className="text-ebony text-xl font-bold mb-3 leading-tight line-clamp-2 group-hover:text-teal-green transition-colors duration-300">
+                    {post.title}
+                  </h3>
 
-                <Link
-                  href={`/blogs/${post.slug}`}
-                  className="inline-flex items-center gap-2 text-teal-green font-semibold hover:text-turquoise-blue transition-colors duration-300 group/link"
-                >
-                  Read More
-                  <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform duration-300" />
-                </Link>
+                  <p className="text-pewter text-sm leading-relaxed mb-4 line-clamp-3">
+                    {post.excerpt}
+                  </p>
+
+                  <Link
+                    href={`/blogs/${post.slug}`}
+                    className="inline-flex items-center gap-2 text-teal-green font-semibold hover:text-turquoise-blue transition-colors duration-300 group/link"
+                  >
+                    Read More
+                    <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform duration-300" />
+                  </Link>
+                </div>
               </div>
+            ))
+          ) : (
+            <div className="col-span-full text-center text-pewter py-12">
+              No blog posts available yet.
             </div>
-          ))}
+          )}
         </div>
 
         {/* Newsletter Section */}

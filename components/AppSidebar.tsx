@@ -1,14 +1,5 @@
 "use client";
-import {
-  CreditCard,
-  FolderOpen,
-  History,
-  Key,
-  LogOut,
-  Newspaper,
-  Star,
-  TestTube,
-} from "lucide-react";
+import { FolderOpen, History, LogOut, Newspaper, TestTube } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -57,7 +48,7 @@ export const AppSidebar = () => {
   const pathname = usePathname();
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader>
+      <SidebarHeader className="bg-ivory">
         <SidebarMenuItem>
           <SidebarMenuButton asChild className="gap-x-4 h-10 px-4">
             <Link href="/" prefetch>
@@ -67,7 +58,7 @@ export const AppSidebar = () => {
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="bg-ivory">
         {menuItems.map((group) => (
           <SidebarGroup key={group.title}>
             <SidebarGroupContent>
