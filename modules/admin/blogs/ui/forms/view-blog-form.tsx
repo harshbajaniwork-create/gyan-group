@@ -19,6 +19,9 @@ import { Switch } from "@/components/ui/switch";
 
 import dynamic from "next/dynamic";
 import { Loader2 } from "lucide-react";
+import { getBlogById } from "../../server/actions";
+import Link from "next/link";
+import { toast } from "sonner";
 
 const RichTextEditorWrapper = dynamic(() => import("../components/rich-text"), {
   ssr: false,
@@ -27,13 +30,14 @@ const RichTextEditorWrapper = dynamic(() => import("../components/rich-text"), {
 
 export const ViewBlogForm = ({ id }: { id: string }) => {
   const [isMounted, setIsMounted] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const form = useForm<z.infer<typeof BlogsSchema>>({
     resolver: zodResolver(BlogsSchema),
     defaultValues: {
       title: "",
+      slug: "",
       content: "",
-      image: "",
       category: "",
       tags: [],
       featured: false,
@@ -44,13 +48,35 @@ export const ViewBlogForm = ({ id }: { id: string }) => {
 
   React.useEffect(() => {
     setIsMounted(true);
-  }, []);
+    // Fetch blog data
+    const loadBlog = async () => {
+      try {
+        const result = await getBlogById(id);
+        if (result.success && result.data) {
+          form.reset({
+            title: result.data.title,
+            slug: result.data.slug,
+            content: result.data.content,
+            category: result.data.category,
+            tags: result.data.tags,
+            featured: result.data.featured,
+            author: result.data.author,
+            status: result.data.status,
+          });
+        } else {
+          toast.error("Failed to load blog data");
+        }
+      } catch (error) {
+        console.error("Load error:", error);
+        toast.error("Failed to load blog");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadBlog();
+  }, [id, form]);
 
-  const onSubmit = async (values: z.infer<typeof BlogsSchema>) => {
-    console.log(values);
-  };
-
-  if (!isMounted) {
+  if (!isMounted || isLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
         <Loader2 className="animate-spin text-teal-green" />
@@ -61,7 +87,7 @@ export const ViewBlogForm = ({ id }: { id: string }) => {
   return (
     <div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <div className="space-y-8">
           <div className="grid grid-cols-3 gap-4">
             <FormField
               control={form.control}
@@ -70,7 +96,20 @@ export const ViewBlogForm = ({ id }: { id: string }) => {
                 <FormItem>
                   <FormLabel>Title</FormLabel>
                   <FormControl>
-                    <Input placeholder="title" type="text" {...field} />
+                    <Input {...field} readOnly className="bg-gray-50" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="slug"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Slug</FormLabel>
+                  <FormControl>
+                    <Input {...field} readOnly className="bg-gray-50" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -83,20 +122,7 @@ export const ViewBlogForm = ({ id }: { id: string }) => {
                 <FormItem>
                   <FormLabel>Category</FormLabel>
                   <FormControl>
-                    <Input placeholder="category" type="text" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="image"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Image</FormLabel>
-                  <FormControl>
-                    <Input placeholder="image URL" type="text" {...field} />
+                    <Input {...field} readOnly className="bg-gray-50" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -111,10 +137,12 @@ export const ViewBlogForm = ({ id }: { id: string }) => {
               <FormItem>
                 <FormLabel>Content</FormLabel>
                 <FormControl>
-                  <RichTextEditorWrapper
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
+                  <div className="pointer-events-none opacity-75">
+                    <RichTextEditorWrapper
+                      value={field.value}
+                      onChange={() => {}}
+                    />
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -129,7 +157,7 @@ export const ViewBlogForm = ({ id }: { id: string }) => {
                 <FormItem>
                   <FormLabel>Author</FormLabel>
                   <FormControl>
-                    <Input placeholder="John Doe" type="text" {...field} />
+                    <Input {...field} readOnly className="bg-gray-50" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -143,16 +171,9 @@ export const ViewBlogForm = ({ id }: { id: string }) => {
                   <FormLabel>Tags</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="e.g., technology, web, coding"
-                      type="text"
                       value={field.value?.join(", ") || ""}
-                      onChange={(e) => {
-                        const tagsArray = e.target.value
-                          .split(",")
-                          .map((tag) => tag.trim())
-                          .filter((tag) => tag.length > 0);
-                        field.onChange(tagsArray);
-                      }}
+                      readOnly
+                      className="bg-gray-50"
                     />
                   </FormControl>
                   <FormMessage />
@@ -166,19 +187,12 @@ export const ViewBlogForm = ({ id }: { id: string }) => {
               control={form.control}
               name="featured"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 bg-gray-50">
                   <div className="space-y-0.5">
                     <FormLabel className="text-base">Featured</FormLabel>
                   </div>
                   <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={(checked) => {
-                        React.startTransition(() => {
-                          field.onChange(checked);
-                        });
-                      }}
-                    />
+                    <Switch checked={field.value} disabled />
                   </FormControl>
                 </FormItem>
               )}
@@ -187,32 +201,30 @@ export const ViewBlogForm = ({ id }: { id: string }) => {
               control={form.control}
               name="status"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 bg-gray-50">
                   <div className="space-y-0.5">
                     <FormLabel className="text-base">Status</FormLabel>
+                    <div className="text-sm text-muted-foreground">
+                      {field.value === "published" ? "Published" : "Draft"}
+                    </div>
                   </div>
                   <FormControl>
-                    <Switch
-                      checked={field.value === "published"}
-                      onCheckedChange={(checked) => {
-                        React.startTransition(() => {
-                          field.onChange(checked ? "published" : "draft");
-                        });
-                      }}
-                    />
+                    <Switch checked={field.value === "published"} disabled />
                   </FormControl>
                 </FormItem>
               )}
             />
           </div>
 
-          <Button
-            type="submit"
-            className="bg-turquoise-blue hover:bg-teal-green cursor-pointer"
-          >
-            Submit
-          </Button>
-        </form>
+          <div className="flex gap-4">
+            <Button asChild variant="outline">
+              <Link href="/admin/blogs">Back to List</Link>
+            </Button>
+            <Button asChild className="bg-turquoise-blue hover:bg-teal-green">
+              <Link href={`/admin/blogs/edit/${id}`}>Edit Blog</Link>
+            </Button>
+          </div>
+        </div>
       </Form>
     </div>
   );

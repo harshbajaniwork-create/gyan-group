@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -19,6 +19,11 @@ import { Switch } from "@/components/ui/switch";
 
 import dynamic from "next/dynamic";
 import { Loader2 } from "lucide-react";
+import slugify from "slugify";
+import { getBlogById, upsertBlog } from "../../server/actions";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import Link from "next/link";
 
 const RichTextEditorWrapper = dynamic(() => import("../components/rich-text"), {
   ssr: false,
@@ -26,14 +31,25 @@ const RichTextEditorWrapper = dynamic(() => import("../components/rich-text"), {
 });
 
 export const EditBlogForm = ({ id }: { id: string }) => {
+  const generateSlug = (name: string) => {
+    return slugify(name, {
+      lower: true,
+      strict: true,
+      trim: true,
+    });
+  };
   const [isMounted, setIsMounted] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof BlogsSchema>>({
     resolver: zodResolver(BlogsSchema),
     defaultValues: {
       title: "",
+      slug: "",
       content: "",
-      image: "",
+      // image: "",
       category: "",
       tags: [],
       featured: false,
@@ -44,13 +60,62 @@ export const EditBlogForm = ({ id }: { id: string }) => {
 
   React.useEffect(() => {
     setIsMounted(true);
-  }, []);
+    // Fetch blog data
+    const loadBlog = async () => {
+      try {
+        const result = await getBlogById(id);
+        if (result.success && result.data) {
+          form.reset({
+            title: result.data.title,
+            slug: result.data.slug,
+            content: result.data.content,
+            category: result.data.category,
+            tags: result.data.tags,
+            featured: result.data.featured,
+            author: result.data.author,
+            status: result.data.status,
+          });
+        } else {
+          toast.error("Failed to load blog data");
+        }
+      } catch (error) {
+        console.error("Load error:", error);
+        toast.error("Failed to load blog");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadBlog();
+  }, [id, form]);
+
+  const title = form.watch("title");
+  useEffect(() => {
+    if (title) {
+      const slug = generateSlug(title);
+      form.setValue("slug", slug);
+    }
+  }, [title, form]);
 
   const onSubmit = async (values: z.infer<typeof BlogsSchema>) => {
-    console.log(values);
+    setIsSubmitting(true);
+    try {
+      const result = await upsertBlog(values, id);
+
+      if (result.success) {
+        toast.success("Blog updated successfully!");
+        router.push("/admin/blogs");
+      } else {
+        toast.error(result.error || "Failed to update blog");
+      }
+    } catch (error) {
+      console.error("Submit error:", error);
+      toast.error("Failed to update blog. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  if (!isMounted) {
+  if (!isMounted || isLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
         <Loader2 className="animate-spin text-teal-green" />
@@ -78,6 +143,19 @@ export const EditBlogForm = ({ id }: { id: string }) => {
             />
             <FormField
               control={form.control}
+              name="slug"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Slug</FormLabel>
+                  <FormControl>
+                    <Input placeholder="slug" type="text" {...field} readOnly />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="category"
               render={({ field }) => (
                 <FormItem>
@@ -89,7 +167,7 @@ export const EditBlogForm = ({ id }: { id: string }) => {
                 </FormItem>
               )}
             />
-            <FormField
+            {/* <FormField
               control={form.control}
               name="image"
               render={({ field }) => (
@@ -101,7 +179,7 @@ export const EditBlogForm = ({ id }: { id: string }) => {
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
           </div>
 
           <FormField
@@ -206,12 +284,27 @@ export const EditBlogForm = ({ id }: { id: string }) => {
             />
           </div>
 
-          <Button
-            type="submit"
-            className="bg-turquoise-blue hover:bg-teal-green cursor-pointer"
-          >
-            Submit
-          </Button>
+          <div className="flex gap-4">
+            <Button asChild variant="outline">
+              <Link href="/admin/blogs" prefetch>
+                Back to List
+              </Link>
+            </Button>
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="bg-turquoise-blue hover:bg-teal-green cursor-pointer disabled:opacity-50"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Updating Blog...
+                </>
+              ) : (
+                "Update Blog"
+              )}
+            </Button>
+          </div>
         </form>
       </Form>
     </div>
