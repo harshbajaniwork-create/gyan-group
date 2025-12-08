@@ -11,8 +11,8 @@ import { useGSAP } from "@gsap/react";
 gsap.registerPlugin(ScrollTrigger);
 
 export interface Product {
-  id: number;
-  name: string;
+  id: string;
+  title: string;
   casNumber: string;
   image: string;
   slug: string;
@@ -158,7 +158,7 @@ export const ProductCategorySection = ({
             ref={productsRef}
             className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6"
           >
-            {products.map((product) => (
+            {products?.map((product) => (
               <Link
                 href={`/products/${categorySlug}/${product.slug}`}
                 key={product.id}
@@ -170,7 +170,7 @@ export const ProductCategorySection = ({
                     <div className="absolute inset-0 bg-teal-green/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     <Image
                       src={product.image}
-                      alt={product.name}
+                      alt={product.title}
                       width={200}
                       height={200}
                       className="object-contain relative z-10 transition-transform duration-700 group-hover:scale-110"
@@ -183,7 +183,7 @@ export const ProductCategorySection = ({
                       {product.casNumber}
                     </p>
                     <h3 className="text-ebony text-lg font-bold leading-tight mb-4 group-hover:text-teal-green transition-colors duration-300 grow">
-                      {product.name}
+                      {product.title}
                     </h3>
                     <div className="flex items-center gap-2 text-teal-green font-semibold text-sm group-hover:gap-3 transition-all duration-300">
                       View Details

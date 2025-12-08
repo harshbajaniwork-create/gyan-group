@@ -1,18 +1,13 @@
 "use client";
 
 import { ProductDetailsSection } from "./ProductDetailsSection";
-import { pharmaProducts } from "./PharmaAndApiIntermediates";
+import { Product } from "./ProductCategorySection";
 
 interface PharmaDetailsProps {
-  slug?: string;
+  product: Product;
 }
 
-export const PharmaDetails = ({ slug }: PharmaDetailsProps) => {
-  // For now, using the first product as example
-  // In production, you'd fetch based on slug
-  const product =
-    pharmaProducts.find((p) => p.slug === slug) || pharmaProducts[0];
-
+export const PharmaDetails = ({ product }: PharmaDetailsProps) => {
   return (
     <ProductDetailsSection
       product={product}

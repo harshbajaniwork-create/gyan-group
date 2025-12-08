@@ -24,8 +24,8 @@ import { Card, CardContent } from "@/components/ui/card";
 gsap.registerPlugin(ScrollTrigger);
 
 export interface ProductDetail {
-  id: number;
-  name: string;
+  id: string;
+  title: string;
   casNumber: string;
   image: string;
   slug: string;
@@ -166,7 +166,7 @@ export const ProductDetailsSection = ({
               CAS: {product.casNumber}
             </p>
             <h1 className="text-teal-green text-3xl md:text-4xl lg:text-5xl font-bold">
-              {product.name}
+              {product.title}
             </h1>
           </div>
 
@@ -180,7 +180,7 @@ export const ProductDetailsSection = ({
                     <div className="absolute inset-0 bg-teal-green/5" />
                     <Image
                       src={product.image}
-                      alt={product.name}
+                      alt={product.title}
                       width={350}
                       height={350}
                       className="object-contain relative z-10"

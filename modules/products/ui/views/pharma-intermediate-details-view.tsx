@@ -1,7 +1,24 @@
 import PageBanner from "@/components/PageBanner";
 import { PharmaDetails } from "../components/PharmaDetails";
+import { getProductBySlug } from "@/modules/admin/products/server/actions";
+import { notFound } from "next/navigation";
 
-export const PharmaIntermediateDetailsView = () => {
+interface Props {
+  slug: string;
+}
+
+export const PharmaIntermediateDetailsView = async ({ slug }: Props) => {
+  const { data: product } = await getProductBySlug(slug);
+
+  if (!product) {
+    return notFound();
+  }
+
+  const mappedProduct = {
+    ...product,
+    category: product.categoryName || "",
+  };
+
   return (
     <section>
       <PageBanner
@@ -14,10 +31,10 @@ export const PharmaIntermediateDetailsView = () => {
             label: "Pharma & API Intermediates",
             href: "/products/pharma-and-api-intermediates",
           },
-          { label: "slug" },
+          { label: product.title },
         ]}
       />
-      <PharmaDetails />
+      <PharmaDetails product={mappedProduct} />
     </section>
   );
 };

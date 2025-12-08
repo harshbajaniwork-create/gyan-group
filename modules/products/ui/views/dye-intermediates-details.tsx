@@ -1,7 +1,24 @@
 import PageBanner from "@/components/PageBanner";
 import { DyeIntermediatesDetails } from "../components/DyeIntermediatesDetails";
+import { getProductBySlug } from "@/modules/admin/products/server/actions";
+import { notFound } from "next/navigation";
 
-export const DyeIntermediatesDetailsView = () => {
+interface Props {
+  slug: string;
+}
+
+export const DyeIntermediatesDetailsView = async ({ slug }: Props) => {
+  const { data: product } = await getProductBySlug(slug);
+
+  if (!product) {
+    return notFound();
+  }
+
+  const mappedProduct = {
+    ...product,
+    category: product.categoryName || "",
+  };
+
   return (
     <section>
       <PageBanner
@@ -14,10 +31,10 @@ export const DyeIntermediatesDetailsView = () => {
             label: "Dye Intermediates",
             href: "/products/dye-intermediates",
           },
-          { label: "slug" },
+          { label: product.title },
         ]}
       />
-      <DyeIntermediatesDetails />
+      <DyeIntermediatesDetails product={mappedProduct} />
     </section>
   );
 };

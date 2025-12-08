@@ -1,7 +1,18 @@
 import PageBanner from "@/components/PageBanner";
 import { DyeIntermediates } from "../components/DyeIntermediates";
+import { getProductsByCategorySlug } from "@/modules/admin/products/server/actions";
 
-export const DyeIntermediatesView = () => {
+export const DyeIntermediatesView = async () => {
+  const { data: products } = await getProductsByCategorySlug(
+    "dye-intermediates"
+  );
+
+  const mappedProducts =
+    products?.map((product) => ({
+      ...product,
+      category: product.categoryName,
+    })) || [];
+
   return (
     <section>
       <PageBanner
@@ -13,7 +24,7 @@ export const DyeIntermediatesView = () => {
           { label: "Dye Intermediates" },
         ]}
       />
-      <DyeIntermediates />
+      <DyeIntermediates products={mappedProducts} />
     </section>
   );
 };

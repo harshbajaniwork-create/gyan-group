@@ -1,7 +1,24 @@
 import PageBanner from "@/components/PageBanner";
 import { PigmentIntermediatesDetails } from "../components/PigmentIntermediatesDetails";
+import { getProductBySlug } from "@/modules/admin/products/server/actions";
+import { notFound } from "next/navigation";
 
-export const PigmentIntermediatesDetailsView = () => {
+interface Props {
+  slug: string;
+}
+
+export const PigmentIntermediatesDetailsView = async ({ slug }: Props) => {
+  const { data: product } = await getProductBySlug(slug);
+
+  if (!product) {
+    return notFound();
+  }
+
+  const mappedProduct = {
+    ...product,
+    category: product.categoryName || "",
+  };
+
   return (
     <section>
       <PageBanner
@@ -14,10 +31,10 @@ export const PigmentIntermediatesDetailsView = () => {
             label: "Pigment Intermediates",
             href: "/products/pigment-intermediates",
           },
-          { label: "slug" },
+          { label: product.title },
         ]}
       />
-      <PigmentIntermediatesDetails />
+      <PigmentIntermediatesDetails product={mappedProduct} />
     </section>
   );
 };
