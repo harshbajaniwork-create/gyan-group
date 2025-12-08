@@ -11,13 +11,20 @@ import { Button } from "@/components/ui/button";
 
 gsap.registerPlugin(ScrollTrigger);
 
-interface FormData {
-  name: string;
-  email: string;
-  phone: string;
-  interest: string;
-  message: string;
-}
+import { createInquiry } from "@/modules/admin/inquiries/server/actions";
+import { InquirySchema } from "@/modules/admin/inquiries/validations";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { toast } from "sonner";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
 const ContactUs = () => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -26,16 +33,19 @@ const ContactUs = () => {
   const infoRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<HTMLDivElement>(null);
 
-  const [formData, setFormData] = useState<FormData>({
-    name: "",
-    email: "",
-    phone: "",
-    interest: "",
-    message: "",
-  });
-
-  const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const form = useForm<z.infer<typeof InquirySchema>>({
+    resolver: zodResolver(InquirySchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+      intrest: "",
+      message: "",
+    },
+  });
 
   useGSAP(
     () => {
@@ -102,41 +112,26 @@ const ContactUs = () => {
     { scope: sectionRef }
   );
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (values: z.infer<typeof InquirySchema>) => {
     setIsSubmitting(true);
+    try {
+      const result = await createInquiry(values);
 
-    // Log form data
-    console.log("Form submitted with data:", formData);
-
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    setIsSubmitting(false);
-    setIsSubmitted(true);
-
-    // Reset form
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      interest: "",
-      message: "",
-    });
-
-    // Hide success message after 5 seconds
-    setTimeout(() => {
-      setIsSubmitted(false);
-    }, 5000);
+      if (result.success) {
+        toast.success("Thank you! Your message has been sent successfully.");
+        setIsSubmitted(true);
+        form.reset();
+      } else {
+        toast.error(
+          result.error || "Failed to submit inquiry. Please try again."
+        );
+      }
+    } catch (error) {
+      console.error("Submission error:", error);
+      toast.error("An unexpected error occurred. Please try again later.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -173,121 +168,134 @@ const ContactUs = () => {
                 we&apos;ll get back to you as soon as possible.
               </p>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Name and Email */}
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="form-element">
-                    <label
-                      htmlFor="name"
-                      className="block text-ebony text-sm font-semibold mb-2"
-                    >
-                      Name
-                    </label>
-                    <Input
-                      type="text"
-                      id="name"
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-6"
+                >
+                  {/* Name and Email */}
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <FormField
+                      control={form.control}
                       name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      required
-                      placeholder="Your name"
-                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-green transition-all duration-300"
+                      render={({ field }) => (
+                        <FormItem className="form-element">
+                          <FormLabel className="text-ebony text-sm font-semibold mb-2">
+                            Name
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="Your name"
+                              {...field}
+                              className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-green transition-all duration-300"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                  </div>
 
-                  <div className="form-element">
-                    <label
-                      htmlFor="email"
-                      className="block text-ebony text-sm font-semibold mb-2"
-                    >
-                      Email
-                    </label>
-                    <Input
-                      type="email"
-                      id="email"
+                    <FormField
+                      control={form.control}
                       name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      required
-                      placeholder="your@email.com"
-                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-green transition-all duration-300"
+                      render={({ field }) => (
+                        <FormItem className="form-element">
+                          <FormLabel className="text-ebony text-sm font-semibold mb-2">
+                            Email
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              type="email"
+                              placeholder="your@email.com"
+                              {...field}
+                              className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-green transition-all duration-300"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
                   </div>
-                </div>
 
-                {/* Phone and Interest */}
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="form-element">
-                    <label
-                      htmlFor="phone"
-                      className="block text-ebony text-sm font-semibold mb-2"
-                    >
-                      Phone
-                    </label>
-                    <Input
-                      type="tel"
-                      id="phone"
+                  {/* Phone and Interest */}
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <FormField
+                      control={form.control}
                       name="phone"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      required
-                      placeholder="Your phone number"
-                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-green transition-all duration-300"
+                      render={({ field }) => (
+                        <FormItem className="form-element">
+                          <FormLabel className="text-ebony text-sm font-semibold mb-2">
+                            Phone
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              type="tel"
+                              placeholder="Your phone number"
+                              {...field}
+                              className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-green transition-all duration-300"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="intrest"
+                      render={({ field }) => (
+                        <FormItem className="form-element">
+                          <FormLabel className="text-ebony text-sm font-semibold mb-2">
+                            Interest of Service
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="What service are you interested in?"
+                              {...field}
+                              className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-green transition-all duration-300"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
                   </div>
 
-                  <div className="form-element">
-                    <label
-                      htmlFor="interest"
-                      className="block text-ebony text-sm font-semibold mb-2"
-                    >
-                      Interest of Service
-                    </label>
-                    <Input
-                      type="text"
-                      id="interest"
-                      name="interest"
-                      value={formData.interest}
-                      onChange={handleChange}
-                      required
-                      placeholder="What service are you interested in?"
-                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-green transition-all duration-300"
-                    />
-                  </div>
-                </div>
-
-                {/* Message */}
-                <div className="form-element">
-                  <label
-                    htmlFor="message"
-                    className="block text-ebony text-sm font-semibold mb-2"
-                  >
-                    Message
-                  </label>
-                  <Textarea
-                    id="message"
+                  {/* Message */}
+                  <FormField
+                    control={form.control}
                     name="message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    required
-                    rows={10}
-                    placeholder="Your message"
-                    className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-green transition-all duration-300 resize-none"
+                    render={({ field }) => (
+                      <FormItem className="form-element">
+                        <FormLabel className="text-ebony text-sm font-semibold mb-2">
+                          Message
+                        </FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="Your message"
+                            rows={10}
+                            {...field}
+                            className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-green transition-all duration-300 resize-none"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                </div>
 
-                {/* Submit Button */}
-                <div className="form-element">
-                  <Button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="inline-flex cursor-pointer items-center gap-2 px-8 py-3 bg-teal-green text-white font-semibold rounded-lg hover:bg-turquoise-blue transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <Send className="w-5 h-5" />
-                    {isSubmitting ? "Sending..." : "Send Request"}
-                  </Button>
-                </div>
-              </form>
+                  {/* Submit Button */}
+                  <div className="form-element">
+                    <Button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="inline-flex cursor-pointer items-center gap-2 px-8 py-3 bg-teal-green text-white font-semibold rounded-lg hover:bg-turquoise-blue transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <Send className="w-5 h-5" />
+                      {isSubmitting ? "Sending..." : "Send Request"}
+                    </Button>
+                  </div>
+                </form>
+              </Form>
             </div>
           </div>
 

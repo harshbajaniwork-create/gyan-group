@@ -65,8 +65,8 @@ export const productsTable = pgTable(
   (table) => [index("products_category_id_idx").on(table.categoryId)]
 );
 
-export const inquiresTable = pgTable(
-  "inquires",
+export const inquiriesTable = pgTable(
+  "inquiries",
   {
     id: text("id")
       .primaryKey()
@@ -79,5 +79,5 @@ export const inquiresTable = pgTable(
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
   },
-  (table) => [index("inquires_email_idx").on(table.email)]
+  (table) => [index("inquiries_email_idx").on(table.email)]
 );

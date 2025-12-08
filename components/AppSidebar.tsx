@@ -36,9 +36,9 @@ const menuItems = [
         url: "/admin/products",
       },
       {
-        title: "Inquires",
+        title: "Inquiries",
         icon: History,
-        url: "/admin/inquires",
+        url: "/admin/inquiries",
       },
     ],
   },
