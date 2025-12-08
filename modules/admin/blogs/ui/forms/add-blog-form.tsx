@@ -48,7 +48,7 @@ export const AddBlogForm = () => {
       title: "",
       slug: "",
       content: "",
-      // image: "",
+      image: "",
       category: "",
       tags: [],
       featured: false,
@@ -198,7 +198,7 @@ export const AddBlogForm = () => {
             )}
           />
 
-          {/* <FormField
+          <FormField
             control={form.control}
             name="image"
             render={({ field }) => (
@@ -210,7 +210,7 @@ export const AddBlogForm = () => {
                 <FormMessage />
               </FormItem>
             )}
-          /> */}
+          />
 
           <div className="grid grid-cols-2 gap-4">
             <FormField

@@ -49,7 +49,7 @@ export const EditBlogForm = ({ id }: { id: string }) => {
       title: "",
       slug: "",
       content: "",
-      // image: "",
+      image: "",
       category: "",
       tags: [],
       featured: false,
@@ -167,7 +167,7 @@ export const EditBlogForm = ({ id }: { id: string }) => {
                 </FormItem>
               )}
             />
-            {/* <FormField
+            <FormField
               control={form.control}
               name="image"
               render={({ field }) => (
@@ -179,7 +179,7 @@ export const EditBlogForm = ({ id }: { id: string }) => {
                   <FormMessage />
                 </FormItem>
               )}
-            /> */}
+            />
           </div>
 
           <FormField

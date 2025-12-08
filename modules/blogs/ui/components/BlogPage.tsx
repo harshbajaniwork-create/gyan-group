@@ -51,7 +51,7 @@ export const BlogPage = ({ slug }: BlogDetailPageProps) => {
             id: result.data.id,
             title: result.data.title,
             content: htmlContent,
-            image: PLACEHOLDER_IMAGE,
+            image: result.data.image || PLACEHOLDER_IMAGE,
             date: formatDate(result.data.createdAt, "full"),
             slug: result.data.slug,
             author: result.data.author,
@@ -86,7 +86,7 @@ export const BlogPage = ({ slug }: BlogDetailPageProps) => {
                   id: b.id,
                   title: b.title,
                   excerpt: excerpt,
-                  image: PLACEHOLDER_IMAGE,
+                  image: b.image || PLACEHOLDER_IMAGE,
                   date: formatDate(b.createdAt, "short"),
                   slug: b.slug,
                   readTime: "5 min read", // You can calculate this based on content length

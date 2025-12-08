@@ -39,7 +39,7 @@ export const BlogsPage = () => {
               id: blog.id,
               title: blog.title,
               excerpt: createExcerpt(htmlContent, 150),
-              image: PLACEHOLDER_IMAGE,
+              image: blog.image || PLACEHOLDER_IMAGE,
               date: formatDate(blog.createdAt, "short"),
               slug: blog.slug,
               featured: blog.featured,

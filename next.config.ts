@@ -16,6 +16,18 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "www.gyangroup.in",
       },
+      {
+        protocol: "https",
+        hostname: "ei8ivscqnfmgh5rr.public.blob.vercel-storage.com",
+      },
+      {
+        protocol: "https",
+        hostname: "gyan-group.vercel.app/blob.vercel-storage.com",
+      },
+      {
+        protocol: "https",
+        hostname: "gyan-group-alpha.vercel.app/blob.vercel-storage.com",
+      },
     ],
   },
 };

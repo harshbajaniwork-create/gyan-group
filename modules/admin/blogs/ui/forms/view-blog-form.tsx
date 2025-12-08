@@ -38,6 +38,7 @@ export const ViewBlogForm = ({ id }: { id: string }) => {
       title: "",
       slug: "",
       content: "",
+      image: "",
       category: "",
       tags: [],
       featured: false,
@@ -57,6 +58,7 @@ export const ViewBlogForm = ({ id }: { id: string }) => {
             title: result.data.title,
             slug: result.data.slug,
             content: result.data.content,
+            image: result.data.image,
             category: result.data.category,
             tags: result.data.tags,
             featured: result.data.featured,
@@ -121,6 +123,19 @@ export const ViewBlogForm = ({ id }: { id: string }) => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Category</FormLabel>
+                  <FormControl>
+                    <Input {...field} readOnly className="bg-gray-50" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="image"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Image</FormLabel>
                   <FormControl>
                     <Input {...field} readOnly className="bg-gray-50" />
                   </FormControl>
