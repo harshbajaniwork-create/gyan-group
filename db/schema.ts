@@ -33,7 +33,6 @@ export const categoriesTable = pgTable(
       .primaryKey()
       .$defaultFn(() => nanoid()),
     name: text("name").notNull().unique(),
-    category: text("category").notNull(),
     slug: text("slug").notNull().unique(),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),

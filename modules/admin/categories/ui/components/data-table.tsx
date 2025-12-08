@@ -22,8 +22,8 @@ import {
 } from "@/components/ui/table";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { DataTablePagination } from "@/components/pagination";
+import Link from "next/link";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -55,15 +55,15 @@ export function DataTable<TData, TValue>({
       <div>
         <div className="flex items-center justify-between py-4">
           <Input
-            placeholder="Filter title..."
-            value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
+            placeholder="Filter name..."
+            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
-              table.getColumn("title")?.setFilterValue(event.target.value)
+              table.getColumn("name")?.setFilterValue(event.target.value)
             }
             className="max-w-sm"
           />
           <Button asChild className="bg-turquoise-blue hover:bg-teal-green">
-            <Link href="/admin/blogs/add">Add Blog</Link>
+            <Link href="/admin/categories/add">Add Category</Link>
           </Button>
         </div>
         <div className="overflow-hidden rounded-md border">
