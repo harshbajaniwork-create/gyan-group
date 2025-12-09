@@ -135,7 +135,7 @@ export const AboutCompanySection = () => {
             </motion.h3>
             <motion.h2
               variants={fadeInUpLarge}
-              className="text-ebony text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight"
+              className="text-ebony text-3xl md:text-4xl font-bold mb-6 leading-tight"
             >
               Gaining knowledge, is the first step to wisdom. Sharing it, is the
               first step to humanity.
