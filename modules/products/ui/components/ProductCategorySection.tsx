@@ -154,45 +154,50 @@ export const ProductCategorySection = ({
           </div>
 
           {/* Products Grid */}
-          <div
-            ref={productsRef}
-            className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6"
-          >
-            {products?.map((product) => (
-              <Link
-                href={`/products/${categorySlug}/${product.slug}`}
-                key={product.id}
-                className="product-card group h-full"
-              >
-                <div className="h-full flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-2">
-                  {/* Image Container */}
-                  <div className="relative h-[280px] bg-linear-to-br from-ivory to-white p-6 flex items-center justify-center overflow-hidden shrink-0">
-                    <div className="absolute inset-0 bg-teal-green/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    <Image
-                      src={product.image}
-                      alt={product.title}
-                      width={200}
-                      height={200}
-                      className="object-contain relative z-10 transition-transform duration-700 group-hover:scale-110"
-                    />
-                  </div>
+          <div ref={productsRef} className="min-h-16">
+            {products && products.length > 0 ? (
+              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {products.map((product) => (
+                  <Link
+                    href={`/products/${categorySlug}/${product.slug}`}
+                    key={product.id}
+                    className="product-card group h-full"
+                  >
+                    <div className="h-full flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-2">
+                      {/* Image Container */}
+                      <div className="relative h-[280px] bg-linear-to-br from-ivory to-white p-6 flex items-center justify-center overflow-hidden shrink-0">
+                        <div className="absolute inset-0 bg-teal-green/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                        <Image
+                          src={product.image}
+                          alt={product.title}
+                          width={200}
+                          height={200}
+                          className="object-contain relative z-10 transition-transform duration-700 group-hover:scale-110"
+                        />
+                      </div>
 
-                  {/* Content */}
-                  <div className="p-6 border-t-4 border-teal-green flex flex-col grow">
-                    <p className="text-pewter text-sm mb-2 font-medium">
-                      {product.casNumber}
-                    </p>
-                    <h3 className="text-ebony text-lg font-bold leading-tight mb-4 group-hover:text-teal-green transition-colors duration-300 grow">
-                      {product.title}
-                    </h3>
-                    <div className="flex items-center gap-2 text-teal-green font-semibold text-sm group-hover:gap-3 transition-all duration-300">
-                      View Details
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+                      {/* Content */}
+                      <div className="p-6 border-t-4 border-teal-green flex flex-col grow">
+                        <p className="text-pewter text-sm mb-2 font-medium">
+                          {product.casNumber}
+                        </p>
+                        <h3 className="text-ebony text-lg font-bold leading-tight mb-4 group-hover:text-teal-green transition-colors duration-300 grow">
+                          {product.title}
+                        </h3>
+                        <div className="flex items-center gap-2 text-teal-green font-semibold text-sm group-hover:gap-3 transition-all duration-300">
+                          View Details
+                          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </Link>
-            ))}
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center text-pewter py-10">
+                No products found in this category yet.
+              </div>
+            )}
           </div>
         </div>
       </div>
