@@ -15,7 +15,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 
 import { Loader2 } from "lucide-react";
 import slugify from "slugify";
@@ -246,33 +245,35 @@ export const EditProductForm = ({ initialData, categories }: Props) => {
             />
           </div>
 
-          <FormField
-            control={form.control}
-            name="application"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Application</FormLabel>
-                <FormControl>
-                  <Textarea placeholder="Application details..." {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="grid grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="application"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Application</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Application details..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="specifications"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Specifications</FormLabel>
-                <FormControl>
-                  <Textarea placeholder="Specifications..." {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="specifications"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Specifications</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Specifications..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
           <FormField
             control={form.control}
