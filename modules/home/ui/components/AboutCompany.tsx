@@ -1,22 +1,11 @@
 "use client";
 
-import { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Building2, Target, Users, Beaker, Microscope } from "lucide-react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
-
-gsap.registerPlugin(ScrollTrigger);
+import { motion } from "framer-motion";
 
 export const AboutCompanySection = () => {
-  const sectionRef = useRef<HTMLElement>(null);
-  const section1Ref = useRef<HTMLDivElement>(null);
-  const section2Ref = useRef<HTMLDivElement>(null);
-  const section3Ref = useRef<HTMLDivElement>(null);
-  const featuresRef = useRef<HTMLDivElement>(null);
-
   const features = [
     {
       icon: Building2,
@@ -42,233 +31,120 @@ export const AboutCompanySection = () => {
     },
   ];
 
-  useGSAP(
-    () => {
-      // Section 1 Animations
-      if (section1Ref.current) {
-        const heading1 = section1Ref.current.querySelector(".section-heading");
-        const title1 = section1Ref.current.querySelector(".section-title");
-        const paragraphs1 =
-          section1Ref.current.querySelectorAll(".section-text");
-        const image1 = section1Ref.current.querySelector(".section-image");
-
-        gsap.from(heading1, {
-          scrollTrigger: {
-            trigger: section1Ref.current,
-            start: "top 80%",
-          },
-          y: 30,
-          opacity: 0,
-          duration: 0.8,
-          ease: "power3.out",
-        });
-
-        gsap.from(title1, {
-          scrollTrigger: {
-            trigger: section1Ref.current,
-            start: "top 80%",
-          },
-          y: 40,
-          opacity: 0,
-          duration: 1,
-          delay: 0.2,
-          ease: "power3.out",
-        });
-
-        gsap.from(paragraphs1, {
-          scrollTrigger: {
-            trigger: section1Ref.current,
-            start: "top 80%",
-          },
-          y: 30,
-          opacity: 0,
-          duration: 0.8,
-          stagger: 0.2,
-          delay: 0.4,
-          ease: "power3.out",
-        });
-
-        gsap.from(image1, {
-          scrollTrigger: {
-            trigger: section1Ref.current,
-            start: "top 80%",
-          },
-          scale: 0.9,
-          opacity: 0,
-          duration: 1.2,
-          delay: 0.3,
-          ease: "power3.out",
-        });
-      }
-
-      // Section 2 Animations
-      if (section2Ref.current) {
-        const title2 = section2Ref.current.querySelector(".section-title");
-        const paragraphs2 =
-          section2Ref.current.querySelectorAll(".section-text");
-        const quote = section2Ref.current.querySelector(".quote-box");
-        const button = section2Ref.current.querySelector(".read-more-btn");
-        const image2 = section2Ref.current.querySelector(".section-image");
-
-        gsap.from(image2, {
-          scrollTrigger: {
-            trigger: section2Ref.current,
-            start: "top 80%",
-          },
-          x: -50,
-          opacity: 0,
-          duration: 1,
-          ease: "power3.out",
-        });
-
-        gsap.from(title2, {
-          scrollTrigger: {
-            trigger: section2Ref.current,
-            start: "top 80%",
-          },
-          x: 50,
-          opacity: 0,
-          duration: 1,
-          delay: 0.2,
-          ease: "power3.out",
-        });
-
-        gsap.from(paragraphs2, {
-          scrollTrigger: {
-            trigger: section2Ref.current,
-            start: "top 80%",
-          },
-          y: 30,
-          opacity: 0,
-          duration: 0.8,
-          stagger: 0.15,
-          delay: 0.4,
-          ease: "power3.out",
-        });
-
-        gsap.from(quote, {
-          scrollTrigger: {
-            trigger: section2Ref.current,
-            start: "top 70%",
-          },
-          scale: 0.95,
-          opacity: 0,
-          duration: 0.8,
-          delay: 0.6,
-          ease: "back.out(1.2)",
-        });
-
-        gsap.from(button, {
-          scrollTrigger: {
-            trigger: section2Ref.current,
-            start: "top 70%",
-          },
-          y: 20,
-          opacity: 0,
-          duration: 0.6,
-          delay: 0.8,
-          ease: "power3.out",
-        });
-      }
-
-      // Section 3 Animations
-      if (section3Ref.current) {
-        const title3 = section3Ref.current.querySelector(".section-title");
-        const paragraphs3 =
-          section3Ref.current.querySelectorAll(".section-text");
-        const image3 = section3Ref.current.querySelector(".section-image");
-
-        gsap.from(title3, {
-          scrollTrigger: {
-            trigger: section3Ref.current,
-            start: "top 80%",
-          },
-          y: 40,
-          opacity: 0,
-          duration: 1,
-          ease: "power3.out",
-        });
-
-        gsap.from(paragraphs3, {
-          scrollTrigger: {
-            trigger: section3Ref.current,
-            start: "top 80%",
-          },
-          y: 30,
-          opacity: 0,
-          duration: 0.8,
-          stagger: 0.2,
-          delay: 0.2,
-          ease: "power3.out",
-        });
-
-        gsap.from(image3, {
-          scrollTrigger: {
-            trigger: section3Ref.current,
-            start: "top 80%",
-          },
-          scale: 0.9,
-          opacity: 0,
-          duration: 1.2,
-          delay: 0.3,
-          ease: "power3.out",
-        });
-      }
-
-      // Features Grid Animation
-      if (featuresRef.current) {
-        const featuresTitle =
-          featuresRef.current.querySelector(".features-title");
-        const featureCards =
-          featuresRef.current.querySelectorAll(".feature-card");
-
-        gsap.from(featuresTitle, {
-          scrollTrigger: {
-            trigger: featuresRef.current,
-            start: "top 80%",
-          },
-          y: 30,
-          opacity: 0,
-          duration: 0.8,
-          ease: "power3.out",
-        });
-
-        gsap.from(featureCards, {
-          scrollTrigger: {
-            trigger: featuresRef.current,
-            start: "top 75%",
-          },
-          y: 50,
-          opacity: 0,
-          duration: 0.8,
-          stagger: 0.15,
-          delay: 0.2,
-          ease: "power3.out",
-        });
-      }
+  // Animation variants
+  const fadeInUp = {
+    hidden: { y: 30, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as const },
     },
-    { scope: sectionRef }
-  );
+  };
+
+  const fadeInUpLarge = {
+    hidden: { y: 40, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { duration: 1, ease: [0.22, 1, 0.36, 1] as const },
+    },
+  };
+
+  const fadeInLeft = {
+    hidden: { x: -50, opacity: 0 },
+    visible: {
+      x: 0,
+      opacity: 1,
+      transition: { duration: 1, ease: [0.22, 1, 0.36, 1] as const },
+    },
+  };
+
+  const fadeInRight = {
+    hidden: { x: 50, opacity: 0 },
+    visible: {
+      x: 0,
+      opacity: 1,
+      transition: { duration: 1, ease: [0.22, 1, 0.36, 1] as const },
+    },
+  };
+
+  const scaleIn = {
+    hidden: { scale: 0.9, opacity: 0 },
+    visible: {
+      scale: 1,
+      opacity: 1,
+      transition: { duration: 1.2, ease: [0.22, 1, 0.36, 1] as const },
+    },
+  };
+
+  const scaleInSmall = {
+    hidden: { scale: 0.95, opacity: 0 },
+    visible: {
+      scale: 1,
+      opacity: 1,
+      transition: { duration: 0.8, ease: [0.34, 1.56, 0.64, 1] as const },
+    },
+  };
+
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+      },
+    },
+  };
+
+  const staggerContainerFast = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
+      },
+    },
+  };
+
+  const cardVariants = {
+    hidden: { y: 50, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as const },
+    },
+  };
 
   return (
-    <section ref={sectionRef} className="bg-ivory py-16 md:py-24 lg:py-32">
+    <section className="bg-ivory py-16 md:py-24 lg:py-32">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* First Section - About Gyan Group */}
-        <div
-          ref={section1Ref}
-          className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center mb-20 lg:mb-32"
-        >
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center mb-20 lg:mb-32">
           {/* Text Content */}
-          <div>
-            <h3 className="section-heading text-teal-green text-sm md:text-base font-semibold tracking-wider uppercase mb-4">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={staggerContainer}
+          >
+            <motion.h3
+              variants={fadeInUp}
+              className="text-teal-green text-sm md:text-base font-semibold tracking-wider uppercase mb-4"
+            >
               ABOUT GYAN GROUP
-            </h3>
-            <h2 className="section-title text-ebony text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight">
+            </motion.h3>
+            <motion.h2
+              variants={fadeInUpLarge}
+              className="text-ebony text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight"
+            >
               Gaining knowledge, is the first step to wisdom. Sharing it, is the
               first step to humanity.
-            </h2>
-            <div className="space-y-4 text-pewter text-base md:text-lg leading-relaxed">
-              <p className="section-text">
+            </motion.h2>
+            <motion.div
+              variants={staggerContainer}
+              className="space-y-4 text-pewter text-base md:text-lg leading-relaxed"
+            >
+              <motion.p variants={fadeInUp}>
                 <span className="font-semibold text-ebony">
                   Gyan (knowledge)
                 </span>{" "}
@@ -280,8 +156,8 @@ export const AboutCompanySection = () => {
                 all <span className="font-semibold text-ebony">mankind</span>{" "}
                 but even for emancipation of its{" "}
                 <span className="font-semibold text-ebony">soul</span>.
-              </p>
-              <p className="section-text">
+              </motion.p>
+              <motion.p variants={fadeInUp}>
                 <span className="font-semibold text-ebony">Gyan</span> is
                 dedicated to{" "}
                 <span className="font-semibold text-ebony">
@@ -293,12 +169,18 @@ export const AboutCompanySection = () => {
                 </span>{" "}
                 work to bulk production of Speciality Chemicals for Bulk Drugs,
                 Agro-chemicals, Dyes & Pigments, Polymers, perfumery chemicals.
-              </p>
-            </div>
-          </div>
+              </motion.p>
+            </motion.div>
+          </motion.div>
 
           {/* Image */}
-          <div className="section-image relative h-[400px] md:h-[500px] lg:h-[600px] rounded-2xl overflow-hidden shadow-2xl group">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={scaleIn}
+            className="relative h-[400px] md:h-[500px] lg:h-[600px] rounded-2xl overflow-hidden shadow-2xl group"
+          >
             <Image
               src="/aboutimg1.jpg"
               alt="Chemical molecules structure"
@@ -306,16 +188,19 @@ export const AboutCompanySection = () => {
               className="object-cover transition-transform duration-700 group-hover:scale-110"
             />
             <div className="absolute inset-0 bg-linear-to-t from-ebony/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          </div>
+          </motion.div>
         </div>
 
         {/* Second Section - Our History */}
-        <div
-          ref={section2Ref}
-          className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center"
-        >
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Image */}
-          <div className="section-image relative h-[400px] md:h-[500px] lg:h-[600px] rounded-2xl overflow-hidden shadow-2xl lg:order-1 group">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={fadeInLeft}
+            className="relative h-[400px] md:h-[500px] lg:h-[600px] rounded-2xl overflow-hidden shadow-2xl lg:order-1 group"
+          >
             <Image
               src="/aboutimg2.jpg"
               alt="Laboratory research"
@@ -323,15 +208,27 @@ export const AboutCompanySection = () => {
               className="object-cover transition-transform duration-700 group-hover:scale-110"
             />
             <div className="absolute inset-0 bg-linear-to-t from-ebony/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          </div>
+          </motion.div>
 
           {/* Text Content */}
-          <div className="lg:order-2">
-            <h2 className="section-title text-teal-green text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={staggerContainer}
+            className="lg:order-2"
+          >
+            <motion.h2
+              variants={fadeInRight}
+              className="text-teal-green text-3xl md:text-4xl lg:text-5xl font-bold mb-6"
+            >
               Our History
-            </h2>
-            <div className="space-y-4 text-pewter text-base md:text-lg leading-relaxed mb-8">
-              <p className="section-text">
+            </motion.h2>
+            <motion.div
+              variants={staggerContainerFast}
+              className="space-y-4 text-pewter text-base md:text-lg leading-relaxed mb-8"
+            >
+              <motion.p variants={fadeInUp}>
                 Gyan started its journey to become a{" "}
                 <span className="font-semibold text-ebony">little giant</span>{" "}
                 in the field of Chemical Technology by inception of{" "}
@@ -360,54 +257,67 @@ export const AboutCompanySection = () => {
                 </span>{" "}
                 namely Reliable life Science in{" "}
                 <span className="font-semibold text-ebony">2017</span>.
-              </p>
-            </div>
+              </motion.p>
+            </motion.div>
 
             {/* Quote */}
-            <div className="quote-box border-l-4 border-teal-green pl-6 py-4 mb-8 bg-teal-green/10 rounded-r-lg transition-colors duration-300">
+            <motion.div
+              variants={scaleInSmall}
+              className="border-l-4 border-teal-green pl-6 py-4 mb-8 bg-teal-green/10 rounded-r-lg transition-colors duration-300"
+            >
               <p className="text-ebony text-lg md:text-xl italic leading-relaxed">
                 &quot;We strive to become acknowledged Global Leaders and
                 preferred Partners in helping our Clients succeed in the rapidly
                 evolving Pharmaceutical markets.&quot;
               </p>
-            </div>
+            </motion.div>
 
             {/* Read More Button */}
-            <Link
-              href="/about/company-profile"
-              className="read-more-btn inline-flex items-center gap-2 px-8 py-3 bg-teal-green text-white font-semibold rounded-lg hover:bg-turquoise-blue transition-all duration-300 shadow-lg hover:shadow-xl hover:gap-3 group"
-            >
-              Read More
-              <svg
-                className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+            <motion.div variants={fadeInUp}>
+              <Link
+                href="/about/company-profile"
+                className="inline-flex items-center gap-2 px-8 py-3 bg-teal-green text-white font-semibold rounded-lg hover:bg-turquoise-blue transition-all duration-300 shadow-lg hover:shadow-xl hover:gap-3 group"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-            </Link>
-          </div>
+                Read More
+                <svg
+                  className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </Link>
+            </motion.div>
+          </motion.div>
         </div>
 
         {/* Custom Synthesis Section */}
         <div className="mt-20 lg:mt-32">
-          <div
-            ref={section3Ref}
-            className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center"
-          >
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Text Content */}
-            <div>
-              <h2 className="section-title text-teal-green text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              variants={staggerContainer}
+            >
+              <motion.h2
+                variants={fadeInUpLarge}
+                className="text-teal-green text-3xl md:text-4xl lg:text-5xl font-bold mb-6"
+              >
                 Custom Synthesis
-              </h2>
-              <div className="space-y-4 text-pewter text-base md:text-lg leading-relaxed mb-8">
-                <p className="section-text">
+              </motion.h2>
+              <motion.div
+                variants={staggerContainer}
+                className="space-y-4 text-pewter text-base md:text-lg leading-relaxed mb-8"
+              >
+                <motion.p variants={fadeInUp}>
                   <span className="font-semibold text-ebony">
                     Custom synthesis
                   </span>{" "}
@@ -427,8 +337,8 @@ export const AboutCompanySection = () => {
                     complex chemical
                   </span>{" "}
                   from reactants or other substances.
-                </p>
-                <p className="section-text">
+                </motion.p>
+                <motion.p variants={fadeInUp}>
                   We are involved in numerous{" "}
                   <span className="font-semibold text-ebony">
                     industrial projects
@@ -443,12 +353,18 @@ export const AboutCompanySection = () => {
                     organic chemistry
                   </span>
                   .
-                </p>
-              </div>
-            </div>
+                </motion.p>
+              </motion.div>
+            </motion.div>
 
             {/* Image */}
-            <div className="section-image relative h-[400px] md:h-[500px] lg:h-[600px] rounded-2xl overflow-hidden shadow-2xl group">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              variants={scaleIn}
+              className="relative h-[400px] md:h-[500px] lg:h-[600px] rounded-2xl overflow-hidden shadow-2xl group"
+            >
               <Image
                 src="/aboutimg3.jpg"
                 alt="Custom synthesis laboratory"
@@ -456,21 +372,34 @@ export const AboutCompanySection = () => {
                 className="object-cover transition-transform duration-700 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-linear-to-t from-ebony/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            </div>
+            </motion.div>
           </div>
 
           {/* Features Grid */}
-          <div ref={featuresRef} className="mt-16">
-            <h3 className="features-title text-ebony text-2xl md:text-3xl font-bold mb-8 text-center">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={staggerContainerFast}
+            className="mt-16"
+          >
+            <motion.h3
+              variants={fadeInUp}
+              className="text-ebony text-2xl md:text-3xl font-bold mb-8 text-center"
+            >
               You must work with us if you are looking for:
-            </h3>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            </motion.h3>
+            <motion.div
+              variants={staggerContainerFast}
+              className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+            >
               {features.map((feature, index) => {
                 const Icon = feature.icon;
                 return (
-                  <div
+                  <motion.div
                     key={index}
-                    className="feature-card bg-white rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all duration-500 border border-teal-green/10 hover:border-teal-green/30 hover:-translate-y-2 group"
+                    variants={cardVariants}
+                    className="bg-white rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all duration-500 border border-teal-green/10 hover:border-teal-green/30 hover:-translate-y-2 group"
                   >
                     <div className="w-14 h-14 rounded-full bg-teal-green/10 flex items-center justify-center mb-4 group-hover:bg-teal-green/20 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6">
                       <Icon className="w-7 h-7 text-teal-green group-hover:text-turquoise-blue transition-colors duration-300" />
@@ -478,11 +407,11 @@ export const AboutCompanySection = () => {
                     <p className="text-ebony text-base font-medium leading-relaxed">
                       {feature.title}
                     </p>
-                  </div>
+                  </motion.div>
                 );
               })}
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
       </div>
     </section>

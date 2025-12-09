@@ -1,6 +1,5 @@
 "use client";
 
-import { useRef } from "react";
 import {
   Target,
   Truck,
@@ -11,11 +10,7 @@ import {
   Lightbulb,
   ShieldCheck,
 } from "lucide-react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
-
-gsap.registerPlugin(ScrollTrigger);
+import { motion } from "framer-motion";
 
 const initiatives = [
   {
@@ -45,109 +40,110 @@ const initiatives = [
 ];
 
 const QualityPolicy = () => {
-  const sectionRef = useRef<HTMLElement>(null);
-  const headerRef = useRef<HTMLDivElement>(null);
-  const introRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<HTMLDivElement>(null);
-  const bannerRef = useRef<HTMLDivElement>(null);
-
-  useGSAP(
-    () => {
-      // Header animation
-      if (headerRef.current) {
-        gsap.from(headerRef.current, {
-          scrollTrigger: {
-            trigger: headerRef.current,
-            start: "top 85%",
-          },
-          y: 50,
-          opacity: 0,
-          duration: 1,
-          ease: "power3.out",
-        });
-      }
-
-      // Intro text animation
-      if (introRef.current) {
-        const paragraphs = introRef.current.querySelectorAll("p");
-        gsap.from(paragraphs, {
-          scrollTrigger: {
-            trigger: introRef.current,
-            start: "top 80%",
-          },
-          y: 30,
-          opacity: 0,
-          duration: 0.8,
-          stagger: 0.2,
-          ease: "power3.out",
-        });
-      }
-
-      // Cards animation
-      if (cardsRef.current) {
-        const cards = cardsRef.current.querySelectorAll(".initiative-card");
-        gsap.from(cards, {
-          scrollTrigger: {
-            trigger: cardsRef.current,
-            start: "top 75%",
-          },
-          y: 60,
-          opacity: 0,
-          duration: 0.8,
-          stagger: 0.1,
-          ease: "power3.out",
-        });
-      }
-
-      // Banner animation
-      if (bannerRef.current) {
-        const quote = bannerRef.current.querySelector(".banner-quote");
-        const values = bannerRef.current.querySelectorAll(".banner-value");
-
-        gsap.from(quote, {
-          scrollTrigger: {
-            trigger: bannerRef.current,
-            start: "top 80%",
-          },
-          scale: 0.95,
-          opacity: 0,
-          duration: 1,
-          ease: "back.out(1.2)",
-        });
-
-        gsap.from(values, {
-          scrollTrigger: {
-            trigger: bannerRef.current,
-            start: "top 75%",
-          },
-          y: 20,
-          opacity: 0,
-          duration: 0.8,
-          stagger: 0.15,
-          delay: 0.3,
-          ease: "power3.out",
-        });
-      }
+  const headerVariants = {
+    hidden: { y: 50, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { duration: 1, ease: [0.22, 1, 0.36, 1] as const },
     },
-    { scope: sectionRef }
-  );
+  };
+
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+      },
+    },
+  };
+
+  const paragraphVariants = {
+    hidden: { y: 30, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as const },
+    },
+  };
+
+  const cardStaggerContainer = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const cardVariants = {
+    hidden: { y: 60, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as const },
+    },
+  };
+
+  const bannerQuoteVariants = {
+    hidden: { scale: 0.95, opacity: 0 },
+    visible: {
+      scale: 1,
+      opacity: 1,
+      transition: { duration: 1, ease: [0.34, 1.56, 0.64, 1] as const },
+    },
+  };
+
+  const bannerValuesContainer = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
+        delayChildren: 0.3,
+      },
+    },
+  };
+
+  const valueVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as const },
+    },
+  };
 
   return (
-    <section ref={sectionRef} className="bg-ivory py-16 md:py-24 lg:py-32">
+    <section className="bg-ivory py-16 md:py-24 lg:py-32">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div ref={headerRef} className="text-center mb-12 md:mb-16">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={headerVariants}
+          className="text-center mb-12 md:mb-16"
+        >
           <h2 className="text-teal-green text-3xl md:text-4xl lg:text-5xl font-bold">
             Quality Policy
           </h2>
-        </div>
+        </motion.div>
 
         {/* Introduction */}
-        <div
-          ref={introRef}
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={staggerContainer}
           className="max-w-4xl mx-auto text-center mb-12 md:mb-16 space-y-4"
         >
-          <p className="text-pewter text-base md:text-lg leading-relaxed">
+          <motion.p
+            variants={paragraphVariants}
+            className="text-pewter text-base md:text-lg leading-relaxed"
+          >
             We strive for continuous{" "}
             <span className="font-semibold text-ebony">improvements</span> to
             meet or exceed the expectations of our{" "}
@@ -156,8 +152,11 @@ const QualityPolicy = () => {
             , delivery of products and completion of{" "}
             <span className="font-semibold text-ebony">projects</span> on
             schedule.
-          </p>
-          <p className="text-pewter text-base md:text-lg leading-relaxed">
+          </motion.p>
+          <motion.p
+            variants={paragraphVariants}
+            className="text-pewter text-base md:text-lg leading-relaxed"
+          >
             We empower our{" "}
             <span className="font-semibold text-ebony">employees</span> and
             maintain an environment that enables individuals to achieve
@@ -166,20 +165,24 @@ const QualityPolicy = () => {
             teamwork and{" "}
             <span className="font-semibold text-ebony">innovation</span>. We
             shall achieve this through the following initiatives:
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
         {/* Initiative Cards */}
-        <div
-          ref={cardsRef}
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={cardStaggerContainer}
           className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16 md:mb-20"
         >
           {initiatives.map((initiative, index) => {
             const Icon = initiative.icon;
             return (
-              <div
+              <motion.div
                 key={index}
-                className="initiative-card bg-white rounded-2xl p-6 md:p-8 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group"
+                variants={cardVariants}
+                className="bg-white rounded-2xl p-6 md:p-8 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group"
               >
                 <div className="w-14 h-14 rounded-full bg-teal-green/10 flex items-center justify-center mb-4 group-hover:bg-teal-green/20 transition-all duration-500 group-hover:scale-110">
                   <Icon className="w-7 h-7 text-teal-green group-hover:text-turquoise-blue transition-colors duration-300" />
@@ -187,14 +190,16 @@ const QualityPolicy = () => {
                 <p className="text-pewter text-base leading-relaxed">
                   {initiative.text}
                 </p>
-              </div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
 
         {/* Quote Banner */}
-        <div
-          ref={bannerRef}
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
           className="relative bg-linear-to-r from-teal-green to-turquoise-blue rounded-3xl p-8 md:p-12 lg:p-16 overflow-hidden"
         >
           {/* Background Pattern */}
@@ -216,7 +221,10 @@ const QualityPolicy = () => {
 
           <div className="relative z-10">
             {/* Quote */}
-            <div className="banner-quote text-center mb-8 md:mb-12">
+            <motion.div
+              variants={bannerQuoteVariants}
+              className="text-center mb-8 md:mb-12"
+            >
               <svg
                 className="w-12 h-12 md:w-16 md:h-16 text-white/40 mx-auto mb-6"
                 fill="currentColor"
@@ -228,39 +236,51 @@ const QualityPolicy = () => {
                 &quot;Where Innovation, Technology & Quality Drive Responsible
                 Chemistry&quot;
               </h3>
-            </div>
+            </motion.div>
 
             {/* Values */}
-            <div className="flex flex-wrap justify-center gap-6 md:gap-8 lg:gap-12">
-              <div className="banner-value flex items-center gap-3 group">
+            <motion.div
+              variants={bannerValuesContainer}
+              className="flex flex-wrap justify-center gap-6 md:gap-8 lg:gap-12"
+            >
+              <motion.div
+                variants={valueVariants}
+                className="flex items-center gap-3 group"
+              >
                 <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center group-hover:bg-white/30 transition-colors duration-300">
                   <Shield className="w-5 h-5 text-white" />
                 </div>
                 <span className="text-white text-base md:text-lg font-semibold uppercase tracking-wider">
                   Trust
                 </span>
-              </div>
+              </motion.div>
 
-              <div className="banner-value flex items-center gap-3 group">
+              <motion.div
+                variants={valueVariants}
+                className="flex items-center gap-3 group"
+              >
                 <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center group-hover:bg-white/30 transition-colors duration-300">
                   <Lightbulb className="w-5 h-5 text-white" />
                 </div>
                 <span className="text-white text-base md:text-lg font-semibold uppercase tracking-wider">
                   Innovation
                 </span>
-              </div>
+              </motion.div>
 
-              <div className="banner-value flex items-center gap-3 group">
+              <motion.div
+                variants={valueVariants}
+                className="flex items-center gap-3 group"
+              >
                 <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center group-hover:bg-white/30 transition-colors duration-300">
                   <ShieldCheck className="w-5 h-5 text-white" />
                 </div>
                 <span className="text-white text-base md:text-lg font-semibold uppercase tracking-wider">
                   Safety
                 </span>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
