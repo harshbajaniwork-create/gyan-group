@@ -337,12 +337,6 @@ const ContactUs = () => {
                     >
                       (+91) 982 588 6288
                     </a>
-                    <a
-                      href="tel:+918511710167"
-                      className="text-pewter text-sm hover:text-teal-green transition-colors duration-300 block"
-                    >
-                      (+91) 851 171 0167
-                    </a>
                   </div>
                 </div>
 
