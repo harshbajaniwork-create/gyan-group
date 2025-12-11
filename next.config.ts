@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
         destination: "/admin/blogs",
         permanent: false,
       },
+      {
+        source: "/products",
+        destination: "/products/pharma-and-api-intermediates",
+        permanent: false,
+      },
     ];
   },
   images: {

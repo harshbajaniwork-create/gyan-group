@@ -200,9 +200,9 @@ const AchievementsAndMilestones = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div ref={headerRef} className="text-center mb-12 md:mb-16">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <Award className="w-8 h-8 md:w-10 md:h-10 text-teal-green" />
-            <h2 className="header-title text-teal-green text-3xl md:text-4xl lg:text-5xl font-bold">
+          <div className="flex items-center justify-center mb-4">
+            <Award className="w-6 h-6 md:w-10 md:h-10 text-teal-green" />
+            <h2 className="header-title text-teal-green text-2xl md:text-4xl lg:text-5xl font-bold">
               Achievements & Milestones
             </h2>
           </div>

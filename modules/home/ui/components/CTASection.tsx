@@ -93,7 +93,7 @@ export const CTASection = () => {
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
             </Link>
             <Link
-              href="/products/pharma-and-api-intermediates"
+              href="/products"
               className="inline-flex items-center gap-2 px-8 py-4 bg-transparent border-2 border-white text-white text-lg font-semibold rounded-lg hover:bg-white hover:text-teal-green transition-all duration-300 group"
             >
               Browse Products

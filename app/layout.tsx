@@ -25,11 +25,15 @@ export const metadata: Metadata = {
     "Gyan Group",
     "Chemical Technology",
     "Pharma Intermediates",
+    "Pharma and API Intermediates",
+    "Pigment",
+    "Pigment Intermediates",
+    "Dyes",
+    "Dye",
+    "Dye Intermediates",
     "Manufacturing",
   ],
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_BASE_URL || "https://www.gyangroup.com"
-  ),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL!),
 };
 
 export default function RootLayout({
